@@ -1,10 +1,13 @@
-FROM python:3.7-alpine3.18
+FROM ubuntu:22.04
+
+# RUN apt-get install libressl-dev
+RUN apt-get update
+RUN apt-get -y install libssl-dev python3 python3-dev python3-pip
+RUN apt-get -y install curl git g++ cargo openssl pkg-config
+RUN env
 
 RUN python3 --version
 
-RUN apk add libressl-dev
-RUN apk add curl git g++ cargo openssl pkgconfig
-RUN env
 
 WORKDIR /usr/src/app
 
@@ -27,7 +30,7 @@ RUN pip install --upgrade pip
 
 # WORKDIR /usr/src/app/FlyBaseAnnotationHelper
 # RUN echo $PWD
-RUN pip install -r requirements.txt
+RUN pip install --prefer-binary -r requirements.txt
 
 #WORKDIR /usr/src/app
 # RUN pip install -r requirements.txt
@@ -48,13 +51,13 @@ RUN pip3 install torch --index-url https://download.pytorch.org/whl/cpu
 # COPY . .
 WORKDIR /usr/src/app/
 
-COPY input_files/fb_synonym_fb_2022_02.tsv FlyBaseAnnotationHelper/.
-COPY input_files/currentDmelHsap.txt FlyBaseAnnotationHelper/.
+COPY data/fb_synonym_fb_2022_02.tsv FlyBaseAnnotationHelper/.
+COPY data/currentDmelHsap.txt FlyBaseAnnotationHelper/.
 
 # in input_files do
 #curl https://ftp.ncbi.nlm.nih.gov/pub/pmc/PMC-ids.csv.gz --output input_files/PMC-ids.csv.gz
 # gunzip PMC-ids.csv.gz
-COPY input_files/PMC-ids.csv FlyBaseAnnotationHelper/.
+COPY data/PMC-ids.csv FlyBaseAnnotationHelper/.
 
 ENTRYPOINT /bin/sh
 # CMD ["python3", "-u", "FlyBaseAnnotationHelper/update_resources.py"]

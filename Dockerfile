@@ -53,13 +53,13 @@ RUN python setup.py develop
 
 WORKDIR /usr/src/app/
 
-COPY input_files/fb_synonym_fb_2022_02.tsv FlyBaseAnnotationHelper/.
-COPY input_files/currentDmelHsap.txt FlyBaseAnnotationHelper/.
+COPY data/fb_synonym_fb_2022_02.tsv FlyBaseAnnotationHelper/.
+COPY data/currentDmelHsap.txt FlyBaseAnnotationHelper/.
 
 # in input_files do
 #curl https://ftp.ncbi.nlm.nih.gov/pub/pmc/PMC-ids.csv.gz --output input_files/PMC-ids.csv.gz
 # gunzip PMC-ids.csv.gz
-COPY input_files/PMC-ids.csv FlyBaseAnnotationHelper/.
+COPY data/PMC-ids.csv FlyBaseAnnotationHelper/.
 
 ENTRYPOINT /bin/sh
 # CMD ["python3", "-u", "FlyBaseAnnotationHelper/update_resources.py"]

@@ -14,7 +14,7 @@ lxml==4.9.3
 MarkupSafe==2.1.3
 mpmath==1.3.0
 networkx==3.1
-numpy==1.24.4
+numpy
 packaging==23.1
 pluggy==1.2.0
 pubmed-parser==0.3.1
@@ -25,10 +25,12 @@ requests==2.22.0
 sacremoses==0.0.53
 six==1.16.0
 sympy==1.12
-tokenizers==0.9.4
+# tokenizers==0.9.4
+tokenizers
 # torch==2.0.1
 tqdm==4.46.1
-transformers==4.2.2
+# transformers==4.2.2
+transformers
 typing-extensions==4.7.1
 Unidecode==1.3.6
 urllib3==1.25.11
