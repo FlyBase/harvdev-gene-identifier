@@ -1,0 +1,60 @@
+FROM python:3.7-alpine3.18
+
+RUN python3 --version
+
+RUN apk add libressl-dev
+RUN apk add curl git g++ cargo openssl pkgconfig
+RUN env
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN find / -name .cargo -print
+#RUN which cargo
+#RUN source /usr/src/.cargo/env
+#RUN apk add cargo
+RUN which cargo
+
+RUN cargo --version
+
+RUN rustc --version
+
+RUN pip install --upgrade pip
+
+#RUN git clone https://huggingface.co/cgrivaz/FlyBaseGeneAbstractClassifier.git
+#RUN git clone https://github.com/grivaz/FlyBaseAnnotationHelper.git
+
+# WORKDIR /usr/src/app/FlyBaseAnnotationHelper
+# RUN echo $PWD
+RUN pip install -r requirements.txt
+
+#WORKDIR /usr/src/app
+# RUN pip install -r requirements.txt
+
+RUN pip3 install torch --index-url https://download.pytorch.org/whl/cpu
+# pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# done by setup
+# RUN pip install -r FlyBaseAnnotationHelper/requirements.txt
+# RUN git clone https://huggingface.co/cgrivaz/FlyBaseGeneAbstractClassifier.git
+# RUN git clone https://github.com/grivaz/FlyBaseAnnotationHelper.git
+
+# No idea, installing from requirements.txt works so no idea why the following fails?
+
+
+# RUN git clone
+# Try mounting input_files it will be quicker
+# COPY . .
+WORKDIR /usr/src/app/
+
+COPY input_files/fb_synonym_fb_2022_02.tsv FlyBaseAnnotationHelper/.
+COPY input_files/currentDmelHsap.txt FlyBaseAnnotationHelper/.
+
+# in input_files do
+#curl https://ftp.ncbi.nlm.nih.gov/pub/pmc/PMC-ids.csv.gz --output input_files/PMC-ids.csv.gz
+# gunzip PMC-ids.csv.gz
+COPY input_files/PMC-ids.csv FlyBaseAnnotationHelper/.
+
+ENTRYPOINT /bin/sh
+# CMD ["python3", "-u", "FlyBaseAnnotationHelper/update_resources.py"]
