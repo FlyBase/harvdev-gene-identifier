@@ -35,5 +35,6 @@ typing-extensions==4.7.1
 Unidecode==1.3.6
 urllib3==1.25.11
 xmltodict==0.13.0
+xformers
 # git+https://github.com/grivaz/FlyBaseAnnotationHelper.git
 # git+https://huggingface.co/cgrivaz/FlyBaseGeneAbstractClassifier.git
