@@ -4,6 +4,8 @@ FROM ubuntu:22.04
 RUN apt-get update
 RUN apt-get -y install libssl-dev python3 python3-dev python3-pip
 RUN apt-get -y install wget curl git g++ cargo openssl pkg-config git-lfs
+RUN apt-get -y install postgresql-client libpq-dev
+# RUN apt-get -y install postgresql postgresql-client
 RUN env
 
 RUN python3 --version
@@ -24,7 +26,7 @@ RUN rustc --version
 
 RUN pip install --upgrade pip
 
-RUN git lfs install
+RUN git lfs install --force
 
 RUN git clone https://github.com/grivaz/FlyBaseAnnotationHelper.git
 
