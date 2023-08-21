@@ -52,7 +52,8 @@ def get_synonyms(cursor, outputfile):
                      f.type_id = 219 and
                      f.is_obsolete = 'f' and
                      f.is_analysis = 'f' and
-                     f.uniquename like 'FBgn%'
+                     f.uniquename like 'FBgn%' and 
+                     o.abbreviation in ('Dmel', 'Hsap')
                ORDER BY f.uniquename"""
 
     cursor.execute(sql)
@@ -62,15 +63,7 @@ def get_synonyms(cursor, outputfile):
     SYN_SGML = 2
     SYN_TYPE = 3
     SYN_CURR = 4
-    syn_sql = """ 
-    SELECT DISTINCT fs.feature_id, s.name as sname, s.synonym_sgml as synonym_sgml, st.name as stype, fs.is_current
-      FROM feature_synonym fs, synonym s, cvterm st
-      WHERE fs.feature_id in (%s) and
-            fs.synonym_id = s.synonym_id and
-            s.type_id = st.cvterm_id and
-            st.name in ('symbol', 'fullname')
-      ORDER by fs.feature_id
-            """
+
 
     ### FlyBase Symbol-Synonym Correspondence Table
     ## Generated: Mon Jul 24 23:20:15 2023
@@ -86,14 +79,17 @@ def get_synonyms(cursor, outputfile):
     # FBgn0000012     Dmel    abb     abbreviated
     # FBgn0000013     Dmel    abd     abdominal               a(3)26|a-3
     i = 0
-    batch_size = 1000
+    batch_size = 500
     with open(outputfile, 'w') as outfile:
         outfile.write('### FlyBase Symbol-Synonym Correspondence Table\n')
         outfile.write('## Generated: Mon Jul 24 23:20:15 2023\n')
         outfile.write('## Using datasource: dbi:Pg:dbname=fb_2023_04_reporting;host=flysql25;port=5432...\n')
         outfile.write('\n##primary_FBid  organism_abbreviation   current_symbol  current_fullname        fullname_synonym(s)     symbol_synonym(s)\n')
 
-        print(genes)
+        if args.debug:
+            print(genes)
+        print_count = 0
+        new_name_count = 0
         while len(genes):
             # print(genes.pop(batch_size))
             # sub_set = [x[0] for x in genes.pop(batch_size)]
@@ -102,26 +98,40 @@ def get_synonyms(cursor, outputfile):
             last_featid = None
             gene_to_abbr = {}
             gene_to_unique = {}
-            while i < batch_size:
+            batch_count = 0
+            while batch_count < batch_size:
                 try:
                     gene = genes.pop()
                     gene_to_abbr[gene[FEAT_ID]] = gene[FEAT_ORG]
                     gene_to_unique[gene[FEAT_ID]] = gene[FEAT_UNIQUE]
-                    print(f"{i} {gene[FEAT_ID]} {gene[FEAT_UNIQUE]} {gene[FEAT_ORG]}")
-                    if i:
-                        sub_set = gene[0]
-                    else: sub_set += f", {gene[FEAT_ID]}"
+                    if args.debug:
+                        print(f"{batch_count} {gene[FEAT_ID]} {gene[FEAT_UNIQUE]} {gene[FEAT_ORG]}")
+                    if not batch_count:
+                        sub_str = str(gene[FEAT_ID])
+                    else:
+                        sub_str += f", {str(gene[FEAT_ID])}"
                 except IndexError:
                     pass
-                i += 1
+                batch_count += 1
             i = 0
-            print("subset")
-            print(sub_set)
+            if args.debug:
+                print("subset")
+                print(sub_set)
             #print(sub_str)
             #print("subset:" + ', '.join(sub_set))
+            syn_sql = f""" 
+            SELECT DISTINCT fs.feature_id, s.name as sname, s.synonym_sgml as synonym_sgml, st.name as stype, fs.is_current
+              FROM feature_synonym fs, synonym s, cvterm st
+              WHERE fs.feature_id in ({sub_str}) and
+                    fs.synonym_id = s.synonym_id and
+                    s.type_id = st.cvterm_id and
+                    st.name in ('symbol', 'fullname')
+              ORDER by fs.feature_id
+                    """
             cursor.execute(syn_sql, (sub_set,))
             syns = cursor.fetchall()
-            print(syns)
+            if args.debug:
+                print(syns)
             last_featid = None
             curr_symbol = ''
             curr_fname = ''
@@ -134,12 +144,11 @@ def get_synonyms(cursor, outputfile):
                     curr_fname = ''
                     fullnames = []
                     syn_list = []
-                elif last_featid == syn[SYN_FEATID]:
-                    pass
-                else:
-                    print(f"Last feat id is {last_featid}")
+                elif last_featid != syn[SYN_FEATID]:
+                    # print(f"Last feat id is {last_featid}")
                     outfile.write(
                         f"{gene_to_unique[last_featid]}\t{gene_to_abbr[last_featid]}\t{curr_symbol}\t{curr_fname}\t{'|'.join(fullnames)}\t{'|'.join(syn_list)}\n")
+                    print_count += 1
                     last_featid = syn[SYN_FEATID]
                     curr_symbol = ''
                     curr_fname = ''
@@ -170,7 +179,8 @@ def get_synonyms(cursor, outputfile):
                     print("\t\tno synonyms linked to this gene...\n")
             outfile.write(
                 f"{gene_to_unique[last_featid]}\t{gene_to_abbr[last_featid]}\t{curr_symbol}\t{curr_fname}\t{'|'.join(fullnames)}\t{'|'.join(syn_list)}\n")
-
+            print_count += 1
+        print(f"Added {print_count} lines")
 
 def start_process():
     cursor = create_postgres_session()
