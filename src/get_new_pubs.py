@@ -40,15 +40,34 @@ def create_postgres_session():
 
 def get_new_pubs_dbxrefs(cursor, outputfile):
     sql = f"""
-    SELECT pub_dbxref_id, pub_id, transaction_timestamp from audit_chado ac, pub_dbxref pt
+    SELECT pub_dbxref_id, pub_id, pt.dbxref_id, transaction_timestamp from audit_chado ac, pub_dbxref pt, dbxref dx
         where ac.audited_table = 'pub_dbxref' and
+              dx.dbxref_id = pt.dbxref_id and 
+              dx.db_id = 314 and -- PMC
               record_pkey = pub_dbxref_id and
               transaction_timestamp between '{os.environ['MONDAY_DATE']}'::date and now() and
-              audit_transaction in ('U','I')"""
+              audit_transaction in ('I')"""
 
     cursor.execute(sql)
-    dbxrefs = cursor.fetchall()
-    print(dbxrefs)
+    pdbxrefs = cursor.fetchall()
+    print(len(pdbxrefs))
+
+    sql = """SELECT dx.accession, dx.db_id FROM dbxref dx 
+               WHERE dx.dbxref_id = %s and 
+                     dx.db_id = 314"""
+    with open(outputfile, 'w') as outfile:
+        for pdbx in pdbxrefs:
+            cursor.execute(sql, (pdbx[2],))
+            dbxs = cursor.fetchall()
+            if dbxs:
+                print(f"{pdbx[1]} {pdbx[3]}")
+                print(dbxs)
+                for dbx in dbxs:
+                    if dbx[0].startswith('PMC'):
+                        outfile.write(f"{dbx[0][3:]}\n")
+                    else:
+                        print(f"PROBLEM: {dbx[0]} does not start with PMC")
+
 
 
 def start_process():
