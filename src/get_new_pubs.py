@@ -76,6 +76,3 @@ def start_process():
 
 
 start_process()
-
-
-start_process()
