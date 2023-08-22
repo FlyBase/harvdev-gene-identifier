@@ -14,9 +14,6 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN mkdir input_files
-RUN mkdir output_files
-
 RUN find / -name .cargo -print
 RUN which cargo
 
