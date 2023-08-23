@@ -1,8 +1,18 @@
 # harvdev-gene-identifier
+
+## Introduction.
+This repo is a helper script to get the latest data from a FlyBase database and dockerise and run <br>
+https://github.com/grivaz/FlyBaseAnnotationHelper and <br>
+https://huggingface.co/cgrivaz/FlyBaseGeneAbstractClassifier
+
+See these for information on how the code all works.
+NOTE: To generate the data using this repo you will need access to a FlyBase postgres database.
+      If you do not have this then you must generate the data another way but call the file names the same things.
+
+
 ## Installation
 1. Clone this repository.
-2. Update the `config.ini` file as necessary.
-3. Build docker image OR pull from dockerhub
+2. Build docker image OR pull from dockerhub
     1) docker build . -t gene-identifier
     2) docker pull flybase/harvdev-gene-identifier
 
@@ -49,5 +59,5 @@ NOTE: gene-identifier being used in examples below. Switch names in commands if 
     6) Output file can be found in the output directory, $GI_DATA_OUTPUT outside of docker and /usr/src/app/output_files inside docker
 
 2. Run code on command line locally (via GoCd etc))
-   1) Get the files needed by following Datafiles needed section
+   1) Get the files needed by following Datafiles needed section or via alternative methods.
    2) docker run --rm -v $GI_DATA_INPUT:/src/input -v $GI_DATA_OUTPUT:/src/output --entrypoint /usr/bin/bash gene-identifier src/run_gene_identifier.sh
