@@ -2,23 +2,25 @@
 ## Installation
 1. Clone this repository.
 2. Update the `config.ini` file as necessary.
-2. Build docker image OR pull from dockerhub
-    1) docker build . -t harvdev-gene-identifier
+3. Build docker image OR pull from dockerhub
+    1) docker build . -t gene-identifier
     2) docker pull flybase/harvdev-gene-identifier
+
+NOTE: gene-identifier being used in examples below. Switch names in commands if using the pulled image.
 
 ## Environment variables needed
 1. USER               - FlyBase postgres db user name 
 2. PGPASSWORD         - FlyBase postgres password
 3. SERVER             - FlyBase postgres server
-      `export SERVER=host.docker.internal` 
+      if using local db instance you need to use `host.docker.internal` 
 4. PORT               - FlyBase postgres port
 5. DB                 - FlyBase postgres db name
 6. PORT               - FlyBase postgres port
 7. MONDAY_DATE        - start date used to generate new Pubs in FlyBase.
-8. GI_DATA_INPUT      - local directory to store files needed to run gene-identfier (*optional, can change docker command directly)
-9. GI_DATA_OUTPUT     - local directory to put output from gene-identfier (*optional)
+8. GI_DATA_INPUT      - local directory to store files needed to run gene-identifier (*optional, can change docker command directly)
+9. GI_DATA_OUTPUT     - local directory to put output from gene-identifier (*optional)
 
-## Datafiles needed (skip this if generating these in interactive shell)
+## Data files needed (skip this if generating these in interactive shell)
 1. Generate a list of Dmel and Hsap current gene synonyms (fb_synonym_latest.tsv)
         `docker run --rm -p$PORT:$PORT -v $GI_DATA_INPUT:/src/input/ -e SERVER=$SERVER -e PGPASSWORD=$PGPASSWORD -e USER=$USER -e DB=$DB -e PORT=$PORT --entrypoint /usr/bin/python3 gene-identifier src/get_synonyms_batch.py --filepath /src/input/`
   
