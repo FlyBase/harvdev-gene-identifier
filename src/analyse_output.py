@@ -37,7 +37,7 @@ Files are named by the monday and friday dates, so here it would be 20230821-202
 
 python3 src/analyse_output.py -f /data/harvdev/gene_identifier/output_files/20230821-20230825.tsv --compare_database
 
-Output can be found in /data/harvdev/gene_identifier/output_files/20230821-20230825.tsv.anal
+Output can be found in /data/harvdev/gene_identifier/output_files/20230821-20230825.tsv.analysis
 
 Run the docker image if repo not installed.
 
@@ -199,7 +199,7 @@ def analyse_data(cursor, filename, compare_database):
     bad_count = 0
     good_count = 0
     gene_list = {}
-    outfile = open(f"{filename}.anal", 'w')
+    outfile = open(f"{filename}.analysis", 'w')
     for line in lines:
         (pubmed, uniquename, score) = line.split('\t')
         score = float(score.strip())
