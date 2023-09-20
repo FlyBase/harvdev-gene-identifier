@@ -42,8 +42,8 @@ Output can be found in /data/harvdev/gene_identifier/output_files/20230821-20230
 Run the docker image if repo not installed.
 
 docker run --network='host' --rm -e SERVER=$SERVER -e USER=$USER -e PGPASSWORD=$PGPASSWORD -e PORT=$PORT -e DB=$DB \
--v /var/go/harvdev-gene-identifier/src:/src -v /data/harvdev/gene-identifier/output_files:/src/output \
---entrypoint python3 flybase/harvdev-gene-identifier  /src/analyse_output.py \
+-v /data/harvdev/gene-identifier/output_files:/src/output \
+--entrypoint python3 flybase/harvdev-gene-identifier  src/analyse_output.py \
 -f /src/output/20230821-20230825.tsv -c
 
 """
