@@ -37,7 +37,7 @@ Files are named by the monday and friday dates, so here it would be 20230821-202
 
 python3 src/analyse_output.py -f /data/harvdev/gene_identifier/output_files/20230821-20230825.tsv --compare_database
 
-Output can be found in /data/harvdev/gene_identifier/output_files/20230821-20230825.tsv.analysis
+Output can be found in /data/harvdev/gene_identifier/output_files/20230821-20230825.tsv.analysis.db_compare
 
 Run the docker image if repo not installed.
 
@@ -61,7 +61,6 @@ parser.add_argument('-d', '--debug', help=d_txt,
 parser.add_argument('-f', '--filename', help=f_txt, required=True)
 parser.add_argument('-c', '--compare_database', help=c_txt, required=False, default=False, action='store_true')
 args = parser.parse_args()
-
 
 
 error_codes = {'Bad_pmcid': 1,
@@ -171,11 +170,6 @@ def print_gene_data(cursor, outfile, uniquename, score, gene_uniquenames, compar
     good_count += 1
 
 
-def mail_message():
-    global good_count, bad_count
-    print(f"{good_count} {bad_count} Need to email, Victoria and harvdev?")
-
-
 def process_gene_list(cursor, gene_list, last_pubmed, outfile, compare_database):
     if not last_pubmed:
         return
@@ -199,7 +193,10 @@ def analyse_data(cursor, filename, compare_database):
     bad_count = 0
     good_count = 0
     gene_list = {}
-    outfile = open(f"{filename}.analysis", 'w')
+    file_name = f"{filename}.analysis"
+    if compare_database:
+        file_name += ".db_compare"
+    outfile = open(file_name, 'w')
     for line in lines:
         (pubmed, uniquename, score) = line.split('\t')
         score = float(score.strip())
@@ -213,9 +210,11 @@ def analyse_data(cursor, filename, compare_database):
 
     if last_pubmed:
         process_gene_list(cursor, gene_list, last_pubmed, outfile, compare_database)
-    if bad_count > good_count:
-        mail_message()
     print(f"good:{good_count}, bad:{bad_count}")
+
+    if bad_count > good_count:
+        exit(-1)
+
 
 
 def start_process():
