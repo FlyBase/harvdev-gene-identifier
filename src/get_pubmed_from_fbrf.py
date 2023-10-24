@@ -64,6 +64,5 @@ def get_pubmed(cursor, filepath, fbrf):
 def start_process():
     cursor = create_postgres_session()
     get_pubmed(cursor, args.filepath, args.reference)
-U
 
 start_process()
