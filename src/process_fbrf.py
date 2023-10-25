@@ -16,7 +16,9 @@ def process_fbrf(fbrf):
     if status:
         print("Getting pubmed id from FBrf failed, error output is:-")
         print(output)
-        return
+        exit(-1)
+    print(f"status is {status}")
+    print(output)
     print("Getting pubmed id from FBrf successful")
 
     cwd = os.getcwd()
