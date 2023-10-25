@@ -54,7 +54,7 @@ def process_fbrf(fbrf):
     # Rename generic files to fbrf specific ones.
     os.rename("/src/output/output.tsv", f"/src/output/{fbrf}.tsv")
     os.rename("/src/output/output.tsv.analysis.db_compare", f"/src/output/{fbrf}.tsv.analysis.db_compare")
-    print("\nOutput file is /data/harvdev/gene-identifier/output_files/{fbrf}.tsv.analysis.db_compare")
+    print(f"\nOutput file is /data/harvdev/gene-identifier/output_files/{fbrf}.tsv.analysis.db_compare")
 
 
 process_fbrf(args.reference)
