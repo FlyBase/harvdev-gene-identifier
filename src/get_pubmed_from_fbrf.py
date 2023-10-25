@@ -54,7 +54,7 @@ def get_pubmed(cursor, filepath, fbrf):
         for pid in pids:
             count += 1
             outfile.write(f"{pid[0]}\n")
-    if count > 1:
+    if count == 0:
         print(f"Could not find Pubmed id for {fbrf}")
         exit(-1)
     if count > 1:
