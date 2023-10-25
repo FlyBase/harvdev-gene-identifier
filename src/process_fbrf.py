@@ -43,7 +43,7 @@ def process_fbrf(fbrf):
     os.chdir(cwd)
 
     # "python3 src/analyse_output.py -f /src/output/output.tsv --compare_database"
-    cmd = "python3 src/analyse_output.py -f /src/output/output.tsv --compare_database"
+    cmd = "python3 src/analyse_output.py -f /src/output/output.tsv --compare_database --ignore_gb"
     (status, output) = subprocess.getstatusoutput(cmd)
     if status:
         print("Analysis failed, error output is:-")
