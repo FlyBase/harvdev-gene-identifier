@@ -20,5 +20,5 @@ python3 src/analyse_output.py -f /src/output/output.tsv --compare_database
 # cat /src/output/output.tsv
 mv /src/output/output.tsv /src/output/$1.tsv
 
-mv /src/output/output.tsv.analysis.db_compare /src/output/$1.analysis.tsv.db_compare
+mv /src/output/output.tsv.analysis.db_compare /src/output/$1.tsv.analysis.db_compare
 echo "Output file is /data/harvdev/gene-identifier/output_files/$1.tsv.analysis.db_compare"
