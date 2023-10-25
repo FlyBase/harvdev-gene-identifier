@@ -15,7 +15,7 @@ echo "Finished AH"
 "Running Analysis on gene identifier output."
 cd ..
 echo "python3 src/analyse_output.py -f /src/output/$1.tsv --compare_database"
-python3 src/analyse_output.py -f /src/output/$1.tsv --compare_database
+python3 src/analyse_output.py -f /src/output/$1.tsv --compare_database 2>&1 /src/output/$1.ao.log
 
 cat /src/output/$1.db_compare
 
