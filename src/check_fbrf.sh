@@ -12,7 +12,7 @@ echo "python3 annotation_helper.py /src/input/$1.txt"
 python3 annotation_helper.py /src/input/$1.txt
 echo "Finished AH"
 
-"Running Analysis on gene identifier output."
+echo "Running Analysis on gene identifier output."
 cd ..
 echo "python3 src/analyse_output.py -f /src/output/output.tsv --compare_database"
 python3 src/analyse_output.py -f /src/output/output.tsv --compare_database
