@@ -55,11 +55,12 @@ f_txt = 'Specify the location of the output file from gene_identifier to be proc
 c_txt = """Compare genes to those in the database for each paper.
          (Off by default as we mostly process new papers here and as a new paper has no genes 
           attached to it yet this is pointless)"""
-
+i_txt = 'ignore good ratio for pass/fail'
 parser.add_argument('-d', '--debug', help=d_txt,
                     default=True, action='store_true')
 parser.add_argument('-f', '--filename', help=f_txt, required=True)
 parser.add_argument('-c', '--compare_database', help=c_txt, required=False, default=False, action='store_true')
+parser.add_argument('-i', '--ignore_gb', required=False, help=i_txt, default=False, action='store_true')
 args = parser.parse_args()
 
 
@@ -184,7 +185,7 @@ def process_gene_list(cursor, gene_list, last_pubmed, outfile, compare_database)
         outfile.write(f"Gene identifier could not process {last_pubmed}:-\n")
 
 
-def analyse_data(cursor, filename, compare_database):
+def analyse_data(cursor, filename, compare_database, ignore_gb):
     global good_count, bad_count
 
     last_pubmed = None
@@ -213,13 +214,14 @@ def analyse_data(cursor, filename, compare_database):
     print(f"good:{good_count}, bad:{bad_count}")
 
     if bad_count > good_count:
-        exit(-1)
+        if not ignore_gb:
+            exit(-1)
 
 
 
 def start_process():
     cursor = create_postgres_session()
-    analyse_data(cursor, args.filename, args.compare_database)
+    analyse_data(cursor, args.filename, args.compare_database, args.ignore_gb)
 
 
 start_process()
