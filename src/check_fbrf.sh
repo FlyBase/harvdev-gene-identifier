@@ -14,9 +14,9 @@ echo "Finished AH"
 
 "Running Analysis on gene identifier output."
 cd ..
-echo "python3 src/analyse_output.py -f /src/output/$1.tsv --compare_database"
-python3 src/analyse_output.py -f /src/output/$1.tsv --compare_database
+echo "python3 src/analyse_output.py -f /src/output/output.tsv --compare_database"
+python3 src/analyse_output.py -f /src/output/output.tsv --compare_database
 
-cat /src/output/$1.db_compare
-
+cat /src/output/output.tsv.db_compare
+mv /src/output/output.tsv.db_compare /src/output/$1.tsv.db_compare
 echo "Output file is /data/harvdev/gene-identifier/output_files/$1.tsv.db_compare"
