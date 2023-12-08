@@ -87,7 +87,8 @@ def get_lookups(cursor, filename, debug):
                 px.pub_id=p.pub_id AND
                 px.dbxref_id=dx.dbxref_id AND
                 dx.accession in ({pubmed_str});"""
-    print(fbrf_sql)
+    if debug:
+        print(fbrf_sql)
     cursor.execute(fbrf_sql)
     for line in cursor.fetchall():
         if debug:
@@ -104,7 +105,7 @@ def process_tsv_file(cursor, filename, debug):
         input_list = f.readlines()
         for line in input_list:
             (pubmed, uniquename, score) = line.split('\t')
-            if uniquename == 'Bad_pmcid' or uniquename == 'No_Matches':
+            if uniquename == 'Bad_pmcid' or uniquename == 'No_Matches' or uniquename == 'No_nxml':
                 continue
             if debug:
                 print(f"{pubmed} -> {pmid_to_pub_id[pubmed]}, {uniquename} -> {unique_to_feat_id[uniquename]}")
